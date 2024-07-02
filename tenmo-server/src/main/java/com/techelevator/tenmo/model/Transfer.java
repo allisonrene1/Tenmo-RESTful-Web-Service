@@ -5,31 +5,40 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.math.BigDecimal;
 
 public class Transfer {
-        @Autowired
+
         private int transfer_id;
-        @Autowired
+
         private int transfer_type_id;
-        @Autowired
+
         private int transfer_status_id;
-        @Autowired
-        private int account_from;
-        @Autowired
-        private int account_to;
-        @Autowired
+
         private int user_id_from;
-        @Autowired
-     private int user_id_to;
-        @Autowired
+
+         private int user_id_to;
         private BigDecimal amount;
 
-//        public Transfer(int transfer_id, int transfer_type_id, int transfer_status_id, int account_from, int account_to, BigDecimal amount){
-//            this.transfer_id = transfer_id;
-//            this.transfer_type_id = transfer_type_id;
-//            this.transfer_status_id = transfer_status_id;
-//            this.account_from = account_from;
-//            this.account_to = account_to;
-//            this.amount = amount;
-//        }
+    public int getUser_id_from() {
+        return user_id_from;
+    }
+
+    public void setUser_id_from(int user_id_from) {
+        this.user_id_from = user_id_from;
+    }
+
+    public int getUser_id_to() {
+        return user_id_to;
+    }
+
+    public void setUser_id_to(int user_id_to) {
+        this.user_id_to = user_id_to;
+    }
+
+    public Transfer(int transfer_id, int transfer_type_id, int transfer_status_id, BigDecimal amount){
+            this.transfer_id = transfer_id;
+            this.transfer_type_id = transfer_type_id;
+            this.transfer_status_id = transfer_status_id;
+            this.amount = amount;
+        }
 
     public Transfer() {
 
@@ -59,21 +68,6 @@ public class Transfer {
             this.transfer_status_id = transfer_status_id;
         }
 
-        public int getAccount_from() {
-            return account_from;
-        }
-
-        public void setAccount_from(int account_from) {
-            this.account_from = account_from;
-        }
-
-        public int getAccount_to() {
-            return account_to;
-        }
-
-        public void setAccount_to(int account_to) {
-            this.account_to = account_to;
-        }
 
         public BigDecimal getAmount() {
             return amount;

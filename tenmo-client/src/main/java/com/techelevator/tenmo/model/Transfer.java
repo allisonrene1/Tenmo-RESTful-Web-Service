@@ -10,11 +10,25 @@ public class Transfer {
     private int transfer_id;
     private int transfer_type_id;
     private int transfer_status_id;
-    private int account_from;
-    private int account_to;
 
     private int user_id_from;
     private int user_id_to;
+
+    public int getUser_id_from() {
+        return user_id_from;
+    }
+
+    public void setUser_id_from(int user_id_from) {
+        this.user_id_from = user_id_from;
+    }
+
+    public int getUser_id_to() {
+        return user_id_to;
+    }
+
+    public void setUser_id_to(int user_id_to) {
+        this.user_id_to = user_id_to;
+    }
 
     private BigDecimal amount;
 
@@ -22,8 +36,6 @@ public class Transfer {
       this.transfer_id = transfer_id;
       this.transfer_type_id = transfer_type_id;
       this.transfer_status_id = transfer_status_id;
-      this.account_from = account_from;
-      this.account_to = account_to;
       this.amount = amount;
     }
 
@@ -53,22 +65,6 @@ public class Transfer {
 
     public void setTransfer_status_id(int transfer_status_id) {
         this.transfer_status_id = transfer_status_id;
-    }
-
-    public int getAccount_from() {
-        return account_from;
-    }
-
-    public void setAccount_from(int account_from) {
-        this.account_from = account_from;
-    }
-
-    public int getAccount_to() {
-        return account_to;
-    }
-
-    public void setAccount_to(int account_to) {
-        this.account_to = account_to;
     }
 
     public BigDecimal getAmount() {

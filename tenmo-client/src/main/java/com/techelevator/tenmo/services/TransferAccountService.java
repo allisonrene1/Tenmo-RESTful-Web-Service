@@ -64,7 +64,7 @@ public class TransferAccountService {
         Transfer transfer = null;
         try {
             ResponseEntity<Transfer> response =
-                    restTemplate.exchange(API_BASE_URL + "transfers",
+                    restTemplate.exchange(API_BASE_URL + "transfer",
                             HttpMethod.GET, makeAuthEntity(), Transfer.class);
             transfer = response.getBody();
         } catch (RestClientResponseException | ResourceAccessException e) {

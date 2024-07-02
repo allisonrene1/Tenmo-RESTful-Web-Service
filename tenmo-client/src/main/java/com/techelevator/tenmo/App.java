@@ -122,7 +122,6 @@ public class App {
         if(desiredUserId > 0){
             BigDecimal value = consoleService.promptForBigDecimal("Enter Amount: ");
             Transfer amountEntered = new Transfer();
-
         }
 
 
