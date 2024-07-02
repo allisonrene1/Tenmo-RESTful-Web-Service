@@ -35,13 +35,6 @@ public class TenmoController {
 
     }
 
-    @RequestMapping(path = "/users", method = RequestMethod.GET)
-    public List<User> listingOutAllUsers(){
-        return userDao.getUsers();
-
-
-    }
-
 
 
 
