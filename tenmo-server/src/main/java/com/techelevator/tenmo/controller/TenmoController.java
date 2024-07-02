@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 @PreAuthorize("isAuthenticated()")
@@ -32,9 +33,17 @@ public class TenmoController {
         int user_id = user.getId();
         return accountDao.getBalanceById(user_id);
 
+    }
+
+    @RequestMapping(path = "/users", method = RequestMethod.GET)
+    public List<User> listingOutAllUsers(){
+        return userDao.getUsers();
 
 
     }
+
+
+
 
 
 }
