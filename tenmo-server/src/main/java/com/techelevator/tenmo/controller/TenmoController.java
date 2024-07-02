@@ -34,5 +34,9 @@ public class TenmoController {
         return accountDao.getBalanceById(user_id);
 
     }
+    @RequestMapping(path = "/users", method = RequestMethod.GET)
+    public List<User> fetchAllUsers(){
+        return userDao.getUsers();
+    }
 
 }

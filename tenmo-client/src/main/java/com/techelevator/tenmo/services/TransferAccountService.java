@@ -2,12 +2,15 @@ package com.techelevator.tenmo.services;
 
 import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.Transfer;
+import com.techelevator.tenmo.model.User;
 import com.techelevator.util.BasicLogger;
 import org.springframework.http.*;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
 
 public class TransferAccountService {
 
@@ -41,6 +44,21 @@ public class TransferAccountService {
             BasicLogger.log(e.getMessage());
         }
         return account;
+    }
+    public List<User> getAllUsers() {
+        List<User> users = null;
+        try {
+            ResponseEntity<User[]> response =
+                    restTemplate.exchange(API_BASE_URL + "users",
+                            HttpMethod.GET, makeAuthEntity(), User[].class);
+           User[] usersArray = response.getBody();
+           if(usersArray != null){
+               users = List.of(usersArray);
+           }
+        } catch (RestClientResponseException | ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+        }
+        return users;
     }
 
 
