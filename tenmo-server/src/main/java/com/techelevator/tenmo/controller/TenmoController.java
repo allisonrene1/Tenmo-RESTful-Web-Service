@@ -27,17 +27,17 @@ public class TenmoController {
 
 
     @RequestMapping(path = "/account", method = RequestMethod.GET)
-    public Account getBalance(Principal principal){
+    public Account getBalance(Principal principal) {
         User user = userDao.getUserByUsername(principal.getName());
 
         int user_id = user.getId();
         return accountDao.getBalanceById(user_id);
 
     }
-
-
-
-
+    @RequestMapping(path = "/users", method = RequestMethod.GET)
+    public List<User> fetchAllUsers(){
+        return userDao.getUsers();
+    }
 
 
 }
