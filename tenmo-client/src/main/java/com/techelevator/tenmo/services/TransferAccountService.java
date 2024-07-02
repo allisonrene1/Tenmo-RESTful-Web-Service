@@ -6,7 +6,7 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-public class TransferService {
+public class TransferAccountService {
 
     private static final String API_BASE_URL = "http://localhost:8080/";
     private final RestTemplate restTemplate = new RestTemplate();
