@@ -1,7 +1,9 @@
 package com.techelevator.tenmo.dao;
 
+import com.techelevator.tenmo.exception.DaoException;
 import com.techelevator.tenmo.model.Transfer;
-import com.techelevator.tenmo.model.TransferDto;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
@@ -44,17 +46,39 @@ public class JdbcTransferDao implements TransferDao {
     }
 
     @Override
-    public Transfer sendTransfers(TransferDto transferDto) {
-//        Transfer transfer = null;
-//        String sql = "";
-//
-//        SqlRowSet
+    public Transfer sendTransfers(Transfer transfer) {
+        Transfer createTransfer = null;
+        String sql = "INSERT INTO transfer (transfer_type_id, transfer_status_id, account_from, account_to, account) " +
+                "VALUES (?, ?, ?, ?, ?) RETURNING transfer_id;";
+        try{
+            int newTransferId = jdbcTemplate.queryForObject(sql, int.class, transfer.getTransfer_type_id(), transfer.getTransfer_status_id(), transfer.getAccount_from(),
+                    transfer.getAccount_to(), transfer.getAmount());
+
+        }catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or database", e);
+        } catch (DataIntegrityViolationException e) {
+            throw new DaoException("Data integrity violation", e);
+        }
+
+
+
         return null;
     }
 
     @Override
-    public Transfer updateTransferStatus(int transfer_id, int transfer_status_id) {
-        return null;
+    public Transfer updateTransferStatus(Transfer updateTransfer) {
+        Transfer updateTransfers = null;
+        String sql = "UPDATE transfer SET transfer_type_id = ?, transfer_status_id = ?, account_from = ?, account_to = ?, account = ? " +
+                    "WHERE transfer_id = ?;";
+        try{
+            int updatedTransfer = jdbcTemplate.update(sql, updateTransfer.getTransfer_type_id(), updateTransfer.getTransfer_status_id(), updateTransfer.getAccount_from(), updateTransfer.getAccount_to(), updateTransfer.getAmount());
+
+        }catch (CannotGetJdbcConnectionException e) {
+            throw new DaoException("Unable to connect to server or database", e);
+        } catch (DataIntegrityViolationException e) {
+            throw new DaoException("Data integrity violation", e);
+        }
+        return updateTransfers;
     }
 
     private Transfer mapRowToTransfer(SqlRowSet rowSet){
