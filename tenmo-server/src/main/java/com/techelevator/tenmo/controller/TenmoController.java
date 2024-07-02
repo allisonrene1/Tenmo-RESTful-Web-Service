@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.List;
@@ -38,6 +39,12 @@ public class TenmoController {
     public List<User> fetchAllUsers(){
         return userDao.getUsers();
     }
+
+    @RequestMapping(path = "/transfers", method = RequestMethod.POST)
+    public Transfer createAndSendTransferRequest(@Valid @RequestBody Transfer transfer){
+        return transferDao.sendTransfers(transfer);
+    }
+
 
 
 }

@@ -1,13 +1,12 @@
 package com.techelevator.tenmo;
 
-import com.techelevator.tenmo.model.Account;
-import com.techelevator.tenmo.model.AuthenticatedUser;
-import com.techelevator.tenmo.model.User;
-import com.techelevator.tenmo.model.UserCredentials;
+import com.techelevator.tenmo.model.*;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.ConsoleService;
 import com.techelevator.tenmo.services.TransferAccountService;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
 
 public class App {
@@ -119,6 +118,13 @@ public class App {
         String username = currentUser.getUser().getUsername();
         List<User> users = transferAccountService.getAllUsers();
         consoleService.printSendRequest(users, username);
+        int desiredUserId = consoleService.promptForInt("Enter ID of user you are sending to (0 to cancel):");
+        if(desiredUserId > 0){
+            BigDecimal value = consoleService.promptForBigDecimal("Enter Amount: ");
+            Transfer amountEntered = new Transfer();
+
+        }
+
 
 		
 	}

@@ -2,6 +2,7 @@ package com.techelevator.tenmo.model;
 
 import java.io.PrintWriter;
 import java.math.BigDecimal;
+import java.security.Principal;
 
 public class Transfer {
 
@@ -12,6 +13,9 @@ public class Transfer {
     private int account_from;
     private int account_to;
 
+    private int user_id_from;
+    private int user_id_to;
+
     private BigDecimal amount;
 
     public Transfer(int transfer_id, int transfer_type_id, int transfer_status_id, int account_from, int account_to, BigDecimal amount){
@@ -21,6 +25,10 @@ public class Transfer {
       this.account_from = account_from;
       this.account_to = account_to;
       this.amount = amount;
+    }
+
+    public Transfer() {
+
     }
 
     public int getTransfer_id() {
