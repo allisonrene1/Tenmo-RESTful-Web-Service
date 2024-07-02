@@ -6,8 +6,9 @@ import com.techelevator.tenmo.model.Transfer;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
+import org.springframework.stereotype.Component;
 
-
+@Component
 public class JdbcAccountDao implements AccountDao{
 
 
@@ -36,7 +37,7 @@ public class JdbcAccountDao implements AccountDao{
     }
     private Account mapRowToAccount(SqlRowSet rowSet){
          Account account = new Account();
-        account.setBalance(rowSet.getBigDecimal("user_id"));
+        account.setBalance(rowSet.getBigDecimal("balance"));
 
         return account;
     }

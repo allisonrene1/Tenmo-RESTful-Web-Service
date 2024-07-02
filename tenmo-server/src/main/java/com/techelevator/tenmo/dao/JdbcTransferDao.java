@@ -45,10 +45,11 @@ public class JdbcTransferDao implements TransferDao {
 
     @Override
     public Transfer sendTransfers(TransferDto transferDto) {
-        Transfer transfer = null;
-        String sql = "";
-
-        SqlRowSet
+//        Transfer transfer = null;
+//        String sql = "";
+//
+//        SqlRowSet
+        return null;
     }
 
     @Override
