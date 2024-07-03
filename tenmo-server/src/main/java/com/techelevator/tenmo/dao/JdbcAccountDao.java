@@ -8,6 +8,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+
 @Component
 public class JdbcAccountDao implements AccountDao{
 
@@ -35,6 +37,11 @@ public class JdbcAccountDao implements AccountDao{
         }
         return account;
     }
+
+    public void increaseAccountBalance(int accountId, BigDecimal amount) {
+        jdbcTemplate.update("UPDATE account SET balance = balance + ? WHERE account_id = ?", amount, accountId);
+    }
+
     private Account mapRowToAccount(SqlRowSet rowSet){
          Account account = new Account();
         account.setBalance(rowSet.getBigDecimal("balance"));

@@ -60,18 +60,25 @@ public class TransferAccountService {
         }
         return users;
     }
-    public Transfer postTransferRequest() {
-        Transfer transfer = null;
+    public Transfer postTransferRequest(Transfer transfer) {
+        Transfer newTransfer = null;
         try {
-            ResponseEntity<Transfer> response =
-                    restTemplate.exchange(API_BASE_URL + "transfer",
-                            HttpMethod.GET, makeAuthEntity(), Transfer.class);
-            transfer = response.getBody();
+            ResponseEntity<Transfer> response = restTemplate.exchange(API_BASE_URL + "transfers",
+                            HttpMethod.POST, makeTransferEntity(transfer), Transfer.class);
+             newTransfer = response.getBody();
         } catch (RestClientResponseException | ResourceAccessException e) {
             BasicLogger.log(e.getMessage());
         }
-        return transfer;
+        return newTransfer;
     }
+    public User[] fetchUserArray(){
+        User[] users = null;
+        ResponseEntity<User[]> response = restTemplate.exchange(API_BASE_URL + "users", HttpMethod.GET, makeAuthEntity(), User[].class);
+        users = response.getBody();
+
+        return users;
+    }
+
 
 
 

@@ -1,9 +1,7 @@
 package com.techelevator.tenmo.services;
 
 
-import com.techelevator.tenmo.model.Account;
-import com.techelevator.tenmo.model.User;
-import com.techelevator.tenmo.model.UserCredentials;
+import com.techelevator.tenmo.model.*;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -94,19 +92,26 @@ public class ConsoleService {
         System.out.println("Your current account balance is: $" + account.getBalance() );
     }
 
-    public void printSendRequest(List<User> users, String username){
+    public Transfer printSendRequest(User[] users,  AuthenticatedUser authenticatedUser){
         System.out.println();
         System.out.println("-----------------------------------------");
         System.out.println("Users");
         System.out.println("ID " + "           " + "Name");
         System.out.println("-----------------------------------------");
         for(User u: users){
-            if(!u.getUsername().equals(username)){
+            if(!u.getUsername().equals(authenticatedUser.getUser().getUsername())){
                 System.out.println(u.getId() + "          "+ u.getUsername());
             }
 
         }
         System.out.println("------------------------------------------");
         System.out.println();
+        int userId = promptForInt("Enter");
+        BigDecimal amount = promptForBigDecimal("Enter amount: ");
+        Transfer transfer = new Transfer();
+        transfer.setAmount(amount);
+        transfer.setUser_id_to(userId);
+        transfer.setUser_id_from(authenticatedUser.getUser().getId());
+        return transfer;
     }
 }

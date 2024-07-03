@@ -41,8 +41,9 @@ public class TenmoController {
     }
 
     @RequestMapping(path = "/transfers", method = RequestMethod.POST)
-    public Transfer createAndSendTransferRequest(@Valid @RequestBody Transfer transfer){
-        return transferDao.sendTransfers(transfer);
+    public Transfer createAndSendTransferRequest(@RequestBody Transfer transfer){
+         return transferDao.sendTransfers(transfer);
+     //   transferDao.
     }
 
 

@@ -115,14 +115,9 @@ public class App {
 	}
 
 	private void sendBucks() {
-        String username = currentUser.getUser().getUsername();
-        List<User> users = transferAccountService.getAllUsers();
-        consoleService.printSendRequest(users, username);
-        int desiredUserId = consoleService.promptForInt("Enter ID of user you are sending to (0 to cancel):");
-        if(desiredUserId > 0){
-            BigDecimal value = consoleService.promptForBigDecimal("Enter Amount: ");
-            Transfer amountEntered = new Transfer();
-        }
+
+        Transfer transfer = consoleService.printSendRequest(transferAccountService.fetchUserArray(), currentUser);
+        transferAccountService.postTransferRequest(transfer);
 
 
 		
@@ -132,5 +127,8 @@ public class App {
 		// TODO Auto-generated method stub
 		
 	}
+//    private boolean isValidTransfer(Transfer transfer, AuthenticatedUser currentUser){
+//
+//    }
 
 }

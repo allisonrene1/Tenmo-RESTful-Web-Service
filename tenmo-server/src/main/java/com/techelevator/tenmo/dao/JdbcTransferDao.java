@@ -24,7 +24,7 @@ public class JdbcTransferDao implements TransferDao {
     public Transfer getTransferById(int transfer_id){
         Transfer transfer = null;
         String sql = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount " +
-                "FROM transfer" +
+                "FROM transfer " +
                 "WHERE transfer_id = ?;" ;
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, transfer_id);
         if(results.next()){
@@ -53,9 +53,10 @@ public class JdbcTransferDao implements TransferDao {
                 "                VALUES (2, 2, (SELECT account_id FROM account WHERE user_id = ?), (SELECT account_id FROM account WHERE user_id = ?), ?) RETURNING transfer_id;";
         try{
             int newTransferId = jdbcTemplate.queryForObject(sql, int.class, createdtransfer.getUser_id_from(), createdtransfer.getUser_id_to(), createdtransfer.getAmount());
-            createdtransfer.setTransfer_id(newTransferId);
 
-            jdbcTemplate.update("UPDATE account SET balance ")
+
+            Transfer newTransfer = getTransferById(newTransferId);
+            return newTransfer;
 
 
 
@@ -69,10 +70,6 @@ public class JdbcTransferDao implements TransferDao {
         }
 
 //        jdbcTemplate.update("UPDATE account SET account_id WHERE user_id =?");
-
-
-
-        return createdtransfer;
     }
 
     @Override
@@ -90,12 +87,15 @@ public class JdbcTransferDao implements TransferDao {
         }
         return updateTransfers;
     }
+    public void increaseBalance
 
     private Transfer mapRowToTransfer(SqlRowSet rowSet){
         Transfer transfer = new Transfer();
         transfer.setTransfer_id(rowSet.getInt("transfer_id"));
         transfer.setTransfer_type_id(rowSet.getInt("transfer_type_id"));
         transfer.setTransfer_status_id(rowSet.getInt("transfer_status_id"));
+        transfer.setUser_id_from(rowSet.getInt("user_id_from"));
+        transfer.setUser_id_to(rowSet.getInt("user_id_to"));
         transfer.setAmount(rowSet.getBigDecimal("amount"));
         return transfer;
     }
