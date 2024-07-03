@@ -7,8 +7,11 @@ import com.techelevator.tenmo.dao.UserDao;
 import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.User;
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -25,6 +28,10 @@ public class TenmoController {
     private UserDao userDao;
     @Autowired
     private AccountDao accountDao;
+
+
+
+
 
 
     @RequestMapping(path = "/account", method = RequestMethod.GET)
@@ -44,6 +51,17 @@ public class TenmoController {
     public Transfer createAndSendTransferRequest(@RequestBody Transfer transfer){
          return transferDao.sendTransfers(transfer);
      //   transferDao.
+    }
+
+    @RequestMapping(path = "/transfers", method = RequestMethod.GET)
+    public List<Transfer> getAllTransfersFromUsers (Principal principal){
+
+        User user = userDao.getUserByUsername(principal.getName());
+        return transferDao.getTransfersByUserId(user.getId());
+    }
+    @RequestMapping(path = "/transfers/{id}", method = RequestMethod.GET)
+    public Transfer getTransferDetails(@PathVariable int transferId){
+        return transferDao.getTransferById(transferId);
     }
 
 

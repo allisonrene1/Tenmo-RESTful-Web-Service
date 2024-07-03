@@ -8,6 +8,7 @@ import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpStatusCodeException;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -43,10 +44,15 @@ public class JdbcTransferDao implements TransferDao {
     @Override
     public List<Transfer> getTransfersByUserId(int user_id) {
         List<Transfer> transfers = new ArrayList<>();
-        String sql = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount" +
-                    "FROM transfer" +
-                    "WHERE account_from IN (SELECT account_id FROM account WHERE user_id = ?) OR account_to IN (SELECT account_id FROM account WHERE user_id = ?)";
-        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, user_id, user_id);
+        String sql = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount, t_from.username AS username_from, t_to.username AS username_to, t_from.user_id AS user_id_from, t_to.user_id AS user_id_to " +
+                "FROM transfer " +
+                "JOIN account a_from ON a_from.account_id = account_from\n" +
+                "JOIN account a_to ON a_to.account_id = account_to\n" +
+                "JOIN tenmo_user t_from ON a_from.user_id = t_from.user_id\n" +
+                "JOIN tenmo_user t_to ON a_to.user_id = t_to.user_id\n" +
+                "WHERE t_from.user_id = ?";
+
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, user_id);
         while(results.next()){
             transfers.add(mapRowToTransfer(results));
         }
@@ -55,6 +61,15 @@ public class JdbcTransferDao implements TransferDao {
 
     @Override
     public Transfer sendTransfers(Transfer createdtransfer) {
+     BigDecimal valueOne = accountDao.getBalanceById(createdtransfer.getUser_id_from()).getBalance();
+            boolean isValid = false;
+            if(createdtransfer.getUser_id_from() != createdtransfer.getUser_id_to() && createdtransfer.getAmount().compareTo(valueOne) <= 0){
+                isValid = true;
+
+            }
+            else{
+                throw new DaoException("This is not valid you stupid !");
+            }
         Transfer newTransfer = null;
         String sql = "INSERT INTO transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount) \n" +
                 "                VALUES (2, 2, (SELECT account_id FROM account WHERE user_id = ?), (SELECT account_id FROM account WHERE user_id = ?), ?) RETURNING transfer_id;";
@@ -67,7 +82,7 @@ public class JdbcTransferDao implements TransferDao {
             BigDecimal zero = new BigDecimal(0);
             BigDecimal sendingBal = accountDao.getbalance(userDao.getUserById(createdtransfer.getUser_id_from()));
             if(createdtransfer.getUser_id_from() != createdtransfer.getUser_id_to()){
-               if(createdtransfer.getAmount().compareTo(zero) == 1 && createdtransfer.getAmount().compareTo(sendingBal) <= 0){
+               if(createdtransfer.getAmount().compareTo(zero) == 1 && createdtransfer.getAmount().compareTo(sendingBal) <= 0 && createdtransfer.getAmount().compareTo(BigDecimal.ZERO) > 0){
                    try {
                        int newTransferId = jdbcTemplate.queryForObject(sql, int.class, createdtransfer.getUser_id_from(), createdtransfer.getUser_id_to(), createdtransfer.getAmount());
                        jdbcTemplate.update(sql1, createdtransfer.getAmount(), createdtransfer.getUser_id_from());
@@ -113,9 +128,11 @@ public class JdbcTransferDao implements TransferDao {
         transfer.setTransfer_id(rowSet.getInt("transfer_id"));
         transfer.setTransfer_type_id(rowSet.getInt("transfer_type_id"));
         transfer.setTransfer_status_id(rowSet.getInt("transfer_status_id"));
-        transfer.setUser_id_from(rowSet.getInt("account_from"));
-        transfer.setUser_id_to(rowSet.getInt("account_to"));
+        transfer.setUser_id_from(rowSet.getInt("user_id_from"));
+        transfer.setUser_id_to(rowSet.getInt("user_id_to"));
         transfer.setAmount(rowSet.getBigDecimal("amount"));
+        transfer.setUsernameFrom(rowSet.getString("username_from"));
+        transfer.setUsernameTo(rowSet.getString("username_to"));
         return transfer;
     }
 }

@@ -17,6 +17,26 @@ public class Transfer {
          private int user_id_to;
         private BigDecimal amount;
 
+        private String usernameTo;
+
+    private String usernameFrom;
+
+    public String getUsernameTo() {
+        return usernameTo;
+    }
+
+    public void setUsernameTo(String usernameTo) {
+        this.usernameTo = usernameTo;
+    }
+
+    public String getUsernameFrom() {
+        return usernameFrom;
+    }
+
+    public void setUsernameFrom(String usernameFrom) {
+        this.usernameFrom = usernameFrom;
+    }
+
     public int getUser_id_from() {
         return user_id_from;
     }
@@ -38,7 +58,7 @@ public class Transfer {
             this.transfer_type_id = transfer_type_id;
             this.transfer_status_id = transfer_status_id;
             this.amount = amount;
-        }
+    }
 
     public Transfer() {
 

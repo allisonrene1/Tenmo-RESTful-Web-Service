@@ -105,7 +105,11 @@ public class App {
 	}
 
 	private void viewTransferHistory() {
-		// TODO Auto-generated method stub
+		List<Transfer> transfers = transferAccountService.getAllTransfersFromUsers();
+        consoleService.printTransfers(transfers, currentUser);
+
+        consoleService.printTransferDetails(currentUser);
+
 		
 	}
 
@@ -117,13 +121,11 @@ public class App {
 	private void sendBucks() {
 
         Transfer transfer = consoleService.printSendRequest(transferAccountService.fetchUserArray(), currentUser);
+        transferAccountService.postTransferRequest(transfer);
 
-        if(isValidTransfer(transfer, currentUser)){
-            transferAccountService.postTransferRequest(transfer);
-        }
-        else{
-            consoleService.printErrorMessage();
-        }
+
+
+
 
 
 		
@@ -133,12 +135,6 @@ public class App {
 		// TODO Auto-generated method stub
 		
 	}
-    private boolean isValidTransfer(Transfer transfer, AuthenticatedUser currentUser){
-        boolean isValid = false;
-        if(transfer.getUser_id_from() != transfer.getUser_id_to() && transfer.getAmount().compareTo(transferAccountService.getBalance()) <= 0){
-            isValid = true;
-        }
-        return isValid;
-    }
+
 
 }

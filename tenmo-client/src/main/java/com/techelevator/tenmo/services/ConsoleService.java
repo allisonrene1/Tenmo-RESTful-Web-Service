@@ -10,6 +10,7 @@ import java.util.Scanner;
 public class ConsoleService {
 
     private final Scanner scanner = new Scanner(System.in);
+    private TransferAccountService transferAccountService = new TransferAccountService();
 
     public int promptForMenuSelection(String prompt) {
         int menuSelection;
@@ -73,7 +74,13 @@ public class ConsoleService {
         System.out.print(prompt);
         while (true) {
             try {
-                return new BigDecimal(scanner.nextLine());
+                BigDecimal prompt1 = new BigDecimal(scanner.nextLine());
+                if(prompt1.compareTo(BigDecimal.ZERO) > 0){
+                    return prompt1;
+                }
+                else {
+                    System.out.println("Invalid input, please enter a positive decimal!");
+                }
             } catch (NumberFormatException e) {
                 System.out.println("Please enter a decimal number.");
             }
@@ -115,4 +122,41 @@ public class ConsoleService {
 
         return transfer;
     }
+    public void printTransfers(List<Transfer> transfers, AuthenticatedUser currentUser){
+        System.out.println("------------------------------------------");
+        System.out.println("Transfers");
+        System.out.println("ID          From/To                 Amount");
+        for(Transfer transfer: transfers){
+
+            if(transfer.getUser_id_from() == currentUser.getUser().getId()){
+                System.out.printf("%-10s TO: %-12s $%-10.2f", transfer.getTransfer_id(), transfer.getUsernameTo(), transfer.getAmount());
+                System.out.println();
+
+            }
+            if(transfer.getUser_id_to() == currentUser.getUser().getId()){
+                System.out.printf("%-10s FROM: %-12s $%-10.2f", transfer.getTransfer_id(), transfer.getUsernameFrom(), transfer.getAmount());
+                System.out.println();
+
+            }
+
+        }
+
+    }
+    public void printTransferDetails(AuthenticatedUser currentUser){
+        int transferId = promptForInt("Enter transfer Id to view: ");
+        Transfer transfer = transferAccountService.getTransferById(transferId);
+
+        if(transfer != null){
+            System.out.println("-------------------------------------");
+            System.out.println("Transfer Details");
+            System.out.println("-------------------------------------");
+            System.out.println("Transfer ID: " + transfer.getTransfer_id());
+            System.out.println("From Account: " + transfer.getUsernameFrom());
+            System.out.println("To Account: " + transfer.getUsernameTo());
+            System.out.println("The Amount: $" + transfer.getAmount());
+        }
+
+
+    }
+
 }

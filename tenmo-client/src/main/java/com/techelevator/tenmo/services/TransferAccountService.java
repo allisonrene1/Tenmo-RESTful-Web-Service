@@ -10,7 +10,9 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
+import java.lang.reflect.Array;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 
 public class TransferAccountService {
@@ -90,6 +92,33 @@ public class TransferAccountService {
         users = response.getBody();
 
         return users;
+    }
+    public List<Transfer> getAllTransfersFromUsers(){
+        List<Transfer> transfers = null;
+        try{
+            ResponseEntity<Transfer[]> response = restTemplate.exchange(API_BASE_URL + "transfers", HttpMethod.GET, makeAuthEntity(), Transfer[].class);
+            Transfer[] transfersArray = response.getBody();
+            if(transfersArray != null){
+                transfers = Arrays.asList(transfersArray);
+            }
+        }
+        catch (RestClientResponseException | ResourceAccessException e) {
+            System.out.println(e.getMessage());
+            BasicLogger.log(e.getMessage());
+        }
+        return transfers;
+    }
+    public Transfer getTransferById(int transferId){
+        Transfer transfer = null;
+        try{
+            ResponseEntity<Transfer> response = restTemplate.exchange(API_BASE_URL +
+                    "transfers/" + transferId, HttpMethod.GET, makeAuthEntity(), Transfer.class);
+            transfer = response.getBody();
+        }
+        catch(RestClientResponseException | ResourceAccessException e){
+            BasicLogger.log(e.getMessage());
+        }
+        return transfer;
     }
 
 
