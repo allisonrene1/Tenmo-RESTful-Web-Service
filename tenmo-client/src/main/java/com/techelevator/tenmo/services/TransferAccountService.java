@@ -10,6 +10,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class TransferAccountService {
@@ -44,6 +45,18 @@ public class TransferAccountService {
             BasicLogger.log(e.getMessage());
         }
         return account;
+    }
+    public BigDecimal getBalance(){
+        BigDecimal balance = null;
+        try{
+        ResponseEntity<BigDecimal> response =
+                restTemplate.exchange(API_BASE_URL + "account",
+                        HttpMethod.GET, makeAuthEntity(), BigDecimal.class);
+        balance = response.getBody();
+    } catch (RestClientResponseException | ResourceAccessException e) {
+        BasicLogger.log(e.getMessage());
+    }
+        return balance;
     }
     public List<User> getAllUsers() {
         List<User> users = null;

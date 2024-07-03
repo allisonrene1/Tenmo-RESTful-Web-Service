@@ -106,12 +106,13 @@ public class ConsoleService {
         }
         System.out.println("------------------------------------------");
         System.out.println();
-        int userId = promptForInt("Enter");
+        int userId = promptForInt("Enter ID of user you are sending to (0 to cancel):");
         BigDecimal amount = promptForBigDecimal("Enter amount: ");
         Transfer transfer = new Transfer();
         transfer.setAmount(amount);
         transfer.setUser_id_to(userId);
         transfer.setUser_id_from(authenticatedUser.getUser().getId());
+
         return transfer;
     }
 }

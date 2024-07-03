@@ -1,6 +1,7 @@
 package com.techelevator.tenmo.dao;
 
 import com.techelevator.tenmo.exception.DaoException;
+import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.Transfer;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
@@ -16,9 +17,15 @@ import java.util.List;
 public class JdbcTransferDao implements TransferDao {
 
     private final JdbcTemplate jdbcTemplate;
+    private AccountDao accountDao;
+
+    private UserDao userDao;
+
 
     public JdbcTransferDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+        this.accountDao = new JdbcAccountDao(jdbcTemplate);
+        this.userDao = new JdbcUserDao(jdbcTemplate);
     }
 
     public Transfer getTransferById(int transfer_id){
@@ -48,28 +55,40 @@ public class JdbcTransferDao implements TransferDao {
 
     @Override
     public Transfer sendTransfers(Transfer createdtransfer) {
-
+        Transfer newTransfer = null;
         String sql = "INSERT INTO transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount) \n" +
                 "                VALUES (2, 2, (SELECT account_id FROM account WHERE user_id = ?), (SELECT account_id FROM account WHERE user_id = ?), ?) RETURNING transfer_id;";
-        try{
-            int newTransferId = jdbcTemplate.queryForObject(sql, int.class, createdtransfer.getUser_id_from(), createdtransfer.getUser_id_to(), createdtransfer.getAmount());
 
 
-            Transfer newTransfer = getTransferById(newTransferId);
-            return newTransfer;
+            String sql1 = "UPDATE account SET balance = balance - ? WHERE user_id =?";
 
+            String sql2 = "UPDATE account SET balance = balance + ? WHERE user_id =?";
 
+            BigDecimal zero = new BigDecimal(0);
+            BigDecimal sendingBal = accountDao.getbalance(userDao.getUserById(createdtransfer.getUser_id_from()));
+            if(createdtransfer.getUser_id_from() != createdtransfer.getUser_id_to()){
+               if(createdtransfer.getAmount().compareTo(zero) == 1 && createdtransfer.getAmount().compareTo(sendingBal) <= 0){
+                   try {
+                       int newTransferId = jdbcTemplate.queryForObject(sql, int.class, createdtransfer.getUser_id_from(), createdtransfer.getUser_id_to(), createdtransfer.getAmount());
+                       jdbcTemplate.update(sql1, createdtransfer.getAmount(), createdtransfer.getUser_id_from());
+                       jdbcTemplate.update(sql2, createdtransfer.getAmount(), createdtransfer.getUser_id_to());
+                       newTransfer = getTransferById(newTransferId);
+                   }
+                   catch (CannotGetJdbcConnectionException e) {
+                       throw new DaoException("Unable to connect to server or database", e);
+                   } catch (DataIntegrityViolationException e) {
+                       throw new DaoException("Data integrity violation", e);
+                   }
+                   return newTransfer;
 
+               }
+               else{
+                   throw new DaoException("Transfer Amount Must Be Less Than The Account Balance!");
+               }
+            }else{
+                throw new DaoException("Cannot Transfer Money to Yourself, Nice TRY!!!!");
+            }
 
-
-
-        }catch (CannotGetJdbcConnectionException e) {
-            throw new DaoException("Unable to connect to server or database", e);
-        } catch (DataIntegrityViolationException e) {
-            throw new DaoException("Data integrity violation", e);
-        }
-
-//        jdbcTemplate.update("UPDATE account SET account_id WHERE user_id =?");
     }
 
     @Override
@@ -87,15 +106,15 @@ public class JdbcTransferDao implements TransferDao {
         }
         return updateTransfers;
     }
-    public void increaseBalance
+//    public void increaseBalance
 
     private Transfer mapRowToTransfer(SqlRowSet rowSet){
         Transfer transfer = new Transfer();
         transfer.setTransfer_id(rowSet.getInt("transfer_id"));
         transfer.setTransfer_type_id(rowSet.getInt("transfer_type_id"));
         transfer.setTransfer_status_id(rowSet.getInt("transfer_status_id"));
-        transfer.setUser_id_from(rowSet.getInt("user_id_from"));
-        transfer.setUser_id_to(rowSet.getInt("user_id_to"));
+        transfer.setUser_id_from(rowSet.getInt("account_from"));
+        transfer.setUser_id_to(rowSet.getInt("account_to"));
         transfer.setAmount(rowSet.getBigDecimal("amount"));
         return transfer;
     }
