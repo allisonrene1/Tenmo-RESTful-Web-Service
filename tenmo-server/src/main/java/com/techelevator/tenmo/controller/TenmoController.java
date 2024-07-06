@@ -31,9 +31,6 @@ public class TenmoController {
 
 
 
-
-
-
     @RequestMapping(path = "/account", method = RequestMethod.GET)
     public Account getBalance(Principal principal) {
         User user = userDao.getUserByUsername(principal.getName());
@@ -63,8 +60,6 @@ public class TenmoController {
     public Transfer getTransferDetails(@PathVariable int transferId){
         return transferDao.getTransferById(transferId);
     }
-
-
 
 
 

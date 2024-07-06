@@ -100,8 +100,6 @@ public class App {
 
         Account account = transferAccountService.getAccountInformation();
         consoleService.printBalance(account);
-
-		
 	}
 
 	private void viewTransferHistory() {
@@ -110,7 +108,6 @@ public class App {
 
         consoleService.printTransferDetails(currentUser);
 
-		
 	}
 
 	private void viewPendingRequests() {
@@ -123,12 +120,6 @@ public class App {
         Transfer transfer = consoleService.printSendRequest(transferAccountService.fetchUserArray(), currentUser);
         transferAccountService.postTransferRequest(transfer);
 
-
-
-
-
-
-		
 	}
 
 	private void requestBucks() {
